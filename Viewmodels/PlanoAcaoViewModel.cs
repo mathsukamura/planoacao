@@ -5,7 +5,7 @@ namespace apiplanoacao.Viewmodels
 {
     public class PlanoAcaoViewModel
     {
-        public int IdColaborador { get; set; }
+        public int ColaboradorAprovador { get; set; }
 
         public string DescricaoAcao { get; set; }
 

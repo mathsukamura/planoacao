@@ -13,9 +13,9 @@ namespace apiplanoacao.Data.Map
             
             builder.HasKey(x => x.Id);
 
-            builder.HasOne(p => p.ColaboradorAprovador)
+            builder.HasOne(p => p.Colaboradoraprovador)
                 .WithMany(p => p.PlanoacaoColaborador)
-                .HasForeignKey(p => p.IdColaboradorAprovador)
+                .HasForeignKey(p => p.ColaboradorAprovador)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(p => p.Usuario)
