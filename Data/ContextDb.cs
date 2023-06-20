@@ -13,7 +13,7 @@ namespace apiplanoacao.Data
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
-        public DbSet<PlanoAcaoModel> planoAcoes { get; set; }
+        public DbSet<PlanoAcaoModel> PlanoAcoes { get; set; }
 
         public DbSet<UsuarioModel> Usuarios { get; set; }
 

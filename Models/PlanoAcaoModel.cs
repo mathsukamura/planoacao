@@ -20,7 +20,7 @@ namespace apiplanoacao.Models
         
         public int IdUsuario { get; set; }
 
-        public int ColaboradorAprovador { get; set; }
+        public int IdColaboradorAprovador { get; set; }
 
         public int ResponsavelTratativa { get; set; }
 
@@ -32,9 +32,11 @@ namespace apiplanoacao.Models
 
         public EStatus Status { get; set; }
 
-        public ICollection<UsuarioModel> usuarios { get; set; }
+        public ICollection<UsuarioModel> ResponsaveisTratativa { get; set; }
 
-        public UsuarioModel usuario { get; set; }
+        public UsuarioModel ColaboradorAprovador { get; set; }
+
+        public UsuarioModel Usuario { get; set; }
 
         public void AtualizaPlano(PlanoAcaoViewModel viewModel)
         {

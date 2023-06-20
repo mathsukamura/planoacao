@@ -13,13 +13,15 @@ namespace apiplanoacao.Data.Map
             
             builder.HasKey(x => x.Id);
 
-            builder.HasOne(p => p.usuario)
-                .WithMany(p => p.planoAcao)
-                .HasForeignKey(p => p.ColaboradorAprovador);
+            builder.HasOne(p => p.ColaboradorAprovador)
+                .WithMany(p => p.PlanoacaoColaborador)
+                .HasForeignKey(p => p.IdColaboradorAprovador)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(p => p.usuario)
-                .WithMany(p => p.planoAcao)
-                .HasForeignKey(p => p.IdUsuario);
+            builder.HasOne(p => p.Usuario)
+                .WithMany(p => p.PlanoAcaos)
+                .HasForeignKey(p => p.IdUsuario)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Property(p => p.DescricaoAcao)
                 .HasColumnName("descricao_acao")
@@ -41,19 +43,19 @@ namespace apiplanoacao.Data.Map
                 .IsRequired()
                 .HasColumnType("int");
 
-            builder.HasMany(x => x.usuarios)
-                .WithMany(x => x.planoAcao)
+            builder.HasMany(x => x.ResponsaveisTratativa)
+                .WithMany(x => x.PlanoAcaoResponsavel)
                 .UsingEntity<Dictionary<string, object>>(
-                    "usuario_planoacao",
+                    "PlanoAcao_Responsavel",
                     j => j
                         .HasOne<UsuarioModel>()
                         .WithMany()
-                        .HasForeignKey("IdPerfil"),
+                        .HasForeignKey("id_planoacao"),
 
                     j => j
                         .HasOne<PlanoAcaoModel>()
                         .WithMany()
-                        .HasForeignKey("IdMenu"));
+                        .HasForeignKey("id_responsavel"));
 
         }
     }

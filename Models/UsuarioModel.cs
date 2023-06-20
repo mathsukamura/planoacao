@@ -12,7 +12,10 @@ namespace apiplanoacao.Models
 
         public string Senha { get; set; }
 
-        public ICollection<PlanoAcaoModel> planoAcao { get; set; }
+        public ICollection<PlanoAcaoModel> PlanoAcaoResponsavel { get; set; }
 
+        public ICollection<PlanoAcaoModel> PlanoacaoColaborador { get; set; }
+
+        public ICollection<PlanoAcaoModel> PlanoAcaos { get; set; }
     }
 }
