@@ -1,0 +1,7 @@
+C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.csproj.AssemblyReference.cache
+C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.GeneratedMSBuildEditorConfig.editorconfig
+C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.AssemblyInfoInputs.cache
+C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.AssemblyInfo.cs
+C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.csproj.CoreCompileInputs.cache
+C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.MvcApplicationPartsAssemblyInfo.cs
+C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.MvcApplicationPartsAssemblyInfo.cache
