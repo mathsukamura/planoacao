@@ -85,8 +85,7 @@ namespace apiplanoacao.Infra
             try
             {
                 if (httpContext.Request.Path.Value.EndsWith("/login") ||
-                    httpContext.Request.Path.Value.EndsWith("swagger/index.html") ||
-                    httpContext.Request.Path.Value.EndsWith("cadastre-se"))
+                    httpContext.Request.Path.Value.EndsWith("swagger/index.html") || httpContext.Request.Path.Value.EndsWith("/cadastro"))
                 {
                     await _next(httpContext);
 
@@ -99,7 +98,7 @@ namespace apiplanoacao.Infra
                     return;
                 }
 
-                //var context = (ContextDb)httpContext.RequestServices.GetService(typeof(ContextDb));
+                var context = (ContextDb)httpContext.RequestServices.GetService(typeof(ContextDb));
 
                 var claim = httpContext.User.Claims.First(c => c.Type == JwtRegisteredClaimNames.Sid);
 
@@ -107,15 +106,15 @@ namespace apiplanoacao.Infra
 
                 int id = int.Parse(idUsuario);
 
-                //var acessoPermitido = await context.Usuarios
-                //      .AnyAsync(u => u.Id == id);
+                var acessoPermitido = await context.Usuarios
+                      .AnyAsync(u => u.Id == id);
 
-                //if (acessoPermitido == true)
-                //{
-                //    await _next(httpContext);
+                if (acessoPermitido == true)
+                {
+                    await _next(httpContext);
 
-                //    return;
-                //}
+                    return;
+                }
 
             }
             catch (Exception ex)

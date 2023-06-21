@@ -1,12 +1,14 @@
-﻿using apiplanoacao.Services.CadastroUsuario;
+﻿using apiplanoacao.Models;
+using apiplanoacao.Services.CadastroUsuario;
 using apiplanoacao.Viewmodels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace apiplanoacao.Controllers
 {
-    [Authorize]
     [Route("cadastro")]
     public class CadastroUsuarioController : ControllerBase
     {

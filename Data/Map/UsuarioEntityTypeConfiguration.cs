@@ -15,7 +15,7 @@ namespace apiplanoacao.Data.Map
             builder.Property(s => s.Nome)
                 .HasColumnName("nome")
                 .IsRequired()
-                .HasColumnType("Varchar(24)");
+                .HasColumnType("Varchar(100)");
 
             builder.Property(s => s.Email)
                 .HasColumnName("email")

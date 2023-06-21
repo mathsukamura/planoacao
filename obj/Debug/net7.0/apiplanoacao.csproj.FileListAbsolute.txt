@@ -1,10 +1,3 @@
-C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.csproj.AssemblyReference.cache
-C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.GeneratedMSBuildEditorConfig.editorconfig
-C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.AssemblyInfoInputs.cache
-C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.AssemblyInfo.cs
-C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.csproj.CoreCompileInputs.cache
-C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.MvcApplicationPartsAssemblyInfo.cs
-C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.MvcApplicationPartsAssemblyInfo.cache
 C:\project\apiplanoacao\bin\Debug\net7.0\appsettings.Development.json
 C:\project\apiplanoacao\bin\Debug\net7.0\appsettings.json
 C:\project\apiplanoacao\bin\Debug\net7.0\apiplanoacao.exe
@@ -34,6 +27,13 @@ C:\project\apiplanoacao\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\project\apiplanoacao\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\project\apiplanoacao\bin\Debug\net7.0\System.CodeDom.dll
 C:\project\apiplanoacao\bin\Debug\net7.0\System.IdentityModel.Tokens.Jwt.dll
+C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.csproj.AssemblyReference.cache
+C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.GeneratedMSBuildEditorConfig.editorconfig
+C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.AssemblyInfoInputs.cache
+C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.AssemblyInfo.cs
+C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.csproj.CoreCompileInputs.cache
+C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.MvcApplicationPartsAssemblyInfo.cs
+C:\project\apiplanoacao\obj\Debug\net7.0\apiplanoacao.MvcApplicationPartsAssemblyInfo.cache
 C:\project\apiplanoacao\obj\Debug\net7.0\staticwebassets\msbuild.apiplanoacao.Microsoft.AspNetCore.StaticWebAssets.props
 C:\project\apiplanoacao\obj\Debug\net7.0\staticwebassets\msbuild.build.apiplanoacao.props
 C:\project\apiplanoacao\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.apiplanoacao.props

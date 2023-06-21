@@ -25,11 +25,9 @@ namespace apiplanoacao.Services.PlanoDeAcao
 
         public async Task<IList<PlanoAcaoModel>> GetAsync()
         {
-            var idUsuario = _obterUsuariorServices.ObterUsuarioId();
+            var usuario = await ValidaUsuario();
 
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(p => p.Id == idUsuario);
-
-            if (usuario == null)
+            if ( usuario == null)
             {
                 return null;
             }
@@ -52,14 +50,7 @@ namespace apiplanoacao.Services.PlanoDeAcao
         {
             var plano = model.CreatePlano();
 
-            var idUsuario = _obterUsuariorServices.ObterUsuarioId();
-
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(p => p.Id == idUsuario);
-
-            if (usuario == null)
-            {
-                return null;
-            }
+            var usuario = await ValidaUsuario();
 
             plano.IdUsuario = usuario.Id;
 
@@ -69,7 +60,7 @@ namespace apiplanoacao.Services.PlanoDeAcao
 
             return plano;
         }
-
+        //precisa retornar uma lista com os planos de ação para somente alterar e mandar em uma so requisição
         public async Task<PlanoAcaoModel> PutAsync(PlanoAcaoViewModel model, int id)
         {
             var plano = await _context.PlanoAcoes.FindAsync(id);
@@ -79,9 +70,7 @@ namespace apiplanoacao.Services.PlanoDeAcao
                 return null;
             }
 
-            var idUsuario = _obterUsuariorServices.ObterUsuarioId();
-
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == idUsuario);
+            var usuario = await ValidaUsuario();
 
             if (plano.IdUsuario != usuario.Id)
             {
@@ -99,7 +88,7 @@ namespace apiplanoacao.Services.PlanoDeAcao
         {
             var plano = await _context.PlanoAcoes.FirstOrDefaultAsync(x => x.Id == id);
 
-            var usuario = await ValidaColaborador(); 
+            var usuario = await ValidaUsuario(); 
 
             if (plano.IdUsuario != usuario.Id)
             {
@@ -118,7 +107,7 @@ namespace apiplanoacao.Services.PlanoDeAcao
             return true;
         }
 
-        private async Task<UsuarioModel> ValidaColaborador()
+        private async Task<UsuarioModel> ValidaUsuario()
         {
             var idUsuario = _obterUsuariorServices.ObterUsuarioId();
 
@@ -135,54 +124,64 @@ namespace apiplanoacao.Services.PlanoDeAcao
             //{
             //    return null;
             //}
-            //var idUsuario = _obterUsuariorServices.ObterUsuarioId();
 
-            //var colaborador = await _context.Colaboradores.FirstOrDefaultAsync(p => p.IdUsuario == idUsuario);
 
-            //var responsavel = await _context.ResponsavelTratativas.FirstOrDefaultAsync(p => p.IdUsuario == idUsuario);
-
-            //if (responsavel == null)
-            //{
-            //    return null;
-            //}
-
-            //if (plano.IdColaborador != responsavel.IdUsuario)
-            //{
-            //    return null;
-            //}
-            //if (responsavel == null)
-            //{
-            //    return null;
-            //}
-
-            //if (plano.IdColaborador != responsavel.IdUsuario)
-            //{
-            //    return null;
-            //}
-
-            //if (model.Status == EStatus.EmAndamento && plano.Status == EStatus.Aberto)
-            //{
-            //    // O responsável pode alterar o status de Aberto para Em Andamento
-            //    plano.AtualizaStatus(model);
-            //}
-            //else if (model.Status == EStatus.AguardandoAprovacao && plano.Status == EStatus.Aberto)
-            //{
-            //    // O responsável pode solicitar a aprovação, alterando o status para Aguardando Aprovação
-            //    plano.AtualizaStatus(model);
-            //}
-            //else if ((model.Status == EStatus.Concluído || model.Status == EStatus.Reprovado) && plano.Colaborador == colaborador)
-            //{
-            //    // Somente o colaborador aprovador pode alterar o status para Aprovado ou Reprovado
-            //    plano.AtualizaStatus(model);
-            //}
-            //else
-            //{
-            //    return null; 
-            //}
 
             //await _context.SaveChangesAsync();
 
             //return plano;
         }
+        public async Task<bool> AlterarStatusPlanoAcao(PlanoAcaoModel model ,int id)
+        {
+            var planoAcao = await _context.PlanoAcoes.FindAsync(id);
+
+            if (planoAcao == null)
+            {
+                // Plano de ação não encontrado
+                return false;
+            }
+
+            var usuario = await ValidaUsuario();
+
+            // Verifica se o usuário é responsável pela tratativa
+            if (planoAcao.ResponsavelTratativa != usuario.Id)
+            {
+                // Usuário não é o responsável pela tratativa
+                return false;
+            }
+
+            if (planoAcao.Status == EStatus.Aberto && model.Status == EStatus.EmAndamento)
+            {
+                planoAcao.Status = EStatus.EmAndamento;
+            }
+
+            else if (planoAcao.Status == EStatus.EmAndamento && model.Status == EStatus.AguardandoAprovacao)
+            {
+                planoAcao.Status = EStatus.AguardandoAprovacao;
+            }
+
+            else if (planoAcao.Status == EStatus.AguardandoAprovacao && (model.Status == EStatus.Concluído || model.Status == EStatus.Reprovado))
+            {
+                var colaboradorAprovador = await _context.Usuarios.FindAsync(planoAcao.ColaboradorAprovador);
+
+                if (colaboradorAprovador == null || colaboradorAprovador.Id != usuario.Id)
+                { 
+                    return false;
+                }
+
+                planoAcao.Status = model.Status;
+            }
+            else
+            {
+                return false;
+            }
+
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+
     }
 }

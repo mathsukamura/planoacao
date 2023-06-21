@@ -17,6 +17,7 @@ namespace apiplanoacao
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<ICadastroUsuarioService, CadastrarUsuarioService>();
             services.AddScoped<IPlanoAcaoService, PlanoAcaoService>();
+            services.AddScoped<IPlanoAcaoRegrasService, PlanosAcaoRegrasService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IObterUsuariorServices, ObterUsuariorServices>();
         }    
