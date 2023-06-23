@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using apiplanoacao.Data;
@@ -11,9 +12,11 @@ using apiplanoacao.Data;
 namespace apiplanoacao.Migrations
 {
     [DbContext(typeof(ContextDb))]
-    partial class ContextDbModelSnapshot : ModelSnapshot
+    [Migration("20230622190827_alterationinpropertycolaborador")]
+    partial class alterationinpropertycolaborador
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,7 +39,7 @@ namespace apiplanoacao.Migrations
 
                     b.HasIndex("id_responsavel");
 
-                    b.ToTable("PlanoAcao_Responsavel", (string)null);
+                    b.ToTable("PlanoAcao_Responsavel");
                 });
 
             modelBuilder.Entity("apiplanoacao.Models.PlanoAcaoModel", b =>
@@ -48,9 +51,9 @@ namespace apiplanoacao.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ColaboradorId")
+                    b.Property<int>("ColaboradorAprovador")
                         .HasColumnType("integer")
-                        .HasColumnName("colaborador_id");
+                        .HasColumnName("colaborador_aprovador");
 
                     b.Property<DateTime>("DataFim")
                         .HasColumnType("timestamp")
@@ -79,7 +82,7 @@ namespace apiplanoacao.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ColaboradorId");
+                    b.HasIndex("ColaboradorAprovador");
 
                     b.HasIndex("IdUsuario");
 
@@ -132,19 +135,19 @@ namespace apiplanoacao.Migrations
 
             modelBuilder.Entity("apiplanoacao.Models.PlanoAcaoModel", b =>
                 {
-                    b.HasOne("apiplanoacao.Models.UsuarioModel", "ColaboradorAprovador")
+                    b.HasOne("apiplanoacao.Models.UsuarioModel", "Colaborador")
                         .WithMany("PlanoacaoColaborador")
-                        .HasForeignKey("ColaboradorId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("ColaboradorAprovador")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("apiplanoacao.Models.UsuarioModel", "Usuario")
                         .WithMany("PlanoAcaos")
                         .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ColaboradorAprovador");
+                    b.Navigation("Colaborador");
 
                     b.Navigation("Usuario");
                 });

@@ -12,6 +12,7 @@ namespace apiplanoacao.Controllers
 {
     [Authorize]
     [Route("plano-acao")]
+    [ApiController]
     public class PlanoAcaoController : ControllerBase
     {
         private readonly IPlanoAcaoService _planoAcaoService;
@@ -29,6 +30,11 @@ namespace apiplanoacao.Controllers
         {
             var plano = await _planoAcaoService.GetAsync();
 
+            if(plano == null)
+            {
+                return NotFound("Não existe plano");
+            }
+
             return Ok(plano);
         }
 
@@ -40,7 +46,7 @@ namespace apiplanoacao.Controllers
             return Ok(plano.Id);
         }
 
-        [HttpPut("alterar-plano")]
+        [HttpPut("alterar-plano/{id}")]
         public async Task<IActionResult> PutAsync(PlanoAcaoViewModel model, int id)
         {
             var plano = await _planoAcaoService.PutAsync(model, id);

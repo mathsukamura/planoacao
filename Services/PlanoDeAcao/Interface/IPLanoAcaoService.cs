@@ -15,9 +15,6 @@ namespace apiplanoacao.Services.PlanoDeAcao.Interface
         public Task<PlanoAcaoModel> PutAsync(PlanoAcaoViewModel model, int id);
 
         public Task<bool> DeleteAsync(int id);
-
-        public void AlterarStatus(PlanoAcaoViewModel model, int id);
-
     }
     public interface IPlanoAcaoRegrasService
     {

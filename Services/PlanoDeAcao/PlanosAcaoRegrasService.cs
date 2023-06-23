@@ -64,7 +64,7 @@ namespace apiplanoacao.Services.PlanoDeAcao
         {
             var usuarioId = _obterUsuariorServices.ObterUsuarioId();
 
-            var planosAcao = _context.PlanoAcoes.Where(p => p.ColaboradorAprovador == usuarioId);
+            var planosAcao = _context.PlanoAcoes.Where(p => p.ColaboradorId == usuarioId);
 
             if (status != null)
             {
@@ -85,6 +85,7 @@ namespace apiplanoacao.Services.PlanoDeAcao
 
             return aprovacoesPendentes;
         }
+
         public async Task<bool> AlterarStatusPlanoAcaoCompleto(List<int> ids, EStatus novoStatus)
         {
             var idUsuario = _obterUsuariorServices.ObterUsuarioId();

@@ -13,15 +13,15 @@ namespace apiplanoacao.Data.Map
             
             builder.HasKey(x => x.Id);
 
-            builder.HasOne(p => p.Colaboradoraprovador)
+            builder.HasOne(p => p.ColaboradorAprovador)
                 .WithMany(p => p.PlanoacaoColaborador)
-                .HasForeignKey(p => p.ColaboradorAprovador)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(p => p.ColaboradorId)
+                .OnDelete(DeleteBehavior.Restrict); 
 
             builder.HasOne(p => p.Usuario)
                 .WithMany(p => p.PlanoAcaos)
                 .HasForeignKey(p => p.IdUsuario)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict); 
 
             builder.Property(p => p.DescricaoAcao)
                 .HasColumnName("descricao_acao")

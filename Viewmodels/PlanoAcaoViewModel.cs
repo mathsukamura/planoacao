@@ -11,31 +11,27 @@ namespace apiplanoacao.Viewmodels
 {
     public class PlanoAcaoViewModel
     {
-        public int Id { get; set; }
         public int ColaboradorAprovador { get; set; }
 
-        public ICollection<UsuarioModel> ResponsaveisTratativa { get; set; }
-
-        public List<string> NomesResponsaveisTratativa => ResponsaveisTratativa?.Select(u => u.Nome).ToList();
+        public List<int> ResponsaveisTratativa { get; set; }
 
         public string DescricaoAcao { get; set; }
 
-        public DateTime DataInicio { get; set; }
+        public DateTime DataInicio { get; set; } = DateTime.UtcNow;
 
-        public DateTime DataFim { get; set; }
-
-        public EStatus Status { get; set; }
+        public DateTime DataFim { get; set; } = DateTime.UtcNow;
 
         public PlanoAcaoModel CreatePlano()
         {
             return new PlanoAcaoModel
             {
+                ColaboradorId = ColaboradorAprovador,
                 DescricaoAcao = DescricaoAcao,
-                ResponsaveisTratativa = (ICollection<UsuarioModel>)NomesResponsaveisTratativa, 
                 DataInicio = DataInicio,
                 DataFim = DataFim,
-                Status = Status
+                Status = EStatus.Aberto
             };
+
         }
     }
 }

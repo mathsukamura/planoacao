@@ -41,7 +41,7 @@ namespace apiplanoacao.Services.GerarToken
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                     }
                 ),
-                Expires = DateTime.UtcNow.AddHours(2),
+                Expires = DateTime.UtcNow.AddHours(4),
                 Issuer = issuer,
                 Audience = audience,
                 SigningCredentials = new SigningCredentials(

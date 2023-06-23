@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using apiplanoacao.Data;
@@ -11,9 +12,11 @@ using apiplanoacao.Data;
 namespace apiplanoacao.Migrations
 {
     [DbContext(typeof(ContextDb))]
-    partial class ContextDbModelSnapshot : ModelSnapshot
+    [Migration("20230623175206_deleterestrictioninforkey")]
+    partial class deleterestrictioninforkey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,7 +39,7 @@ namespace apiplanoacao.Migrations
 
                     b.HasIndex("id_responsavel");
 
-                    b.ToTable("PlanoAcao_Responsavel", (string)null);
+                    b.ToTable("PlanoAcao_Responsavel");
                 });
 
             modelBuilder.Entity("apiplanoacao.Models.PlanoAcaoModel", b =>
