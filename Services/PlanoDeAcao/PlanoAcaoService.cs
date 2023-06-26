@@ -48,6 +48,29 @@ namespace apiplanoacao.Services.PlanoDeAcao
 
         }
 
+        public async Task<PlanoAcaoModel> GetById(int id)
+        {
+            var usuario = await ValidaUsuario();
+
+            if (usuario == null)
+            {
+                return null;
+            }
+
+            var plano = await _context.PlanoAcoes
+                .Where(p => p.IdUsuario == usuario.Id & p.Id == id)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            if (plano== null)
+            {
+                return null;
+            }
+
+            return (plano);
+
+        }
+
         public async Task<PlanoAcaoModel> PostAsync(PlanoAcaoViewModel model)
         {
             var plano = model.CreatePlano();
@@ -58,11 +81,14 @@ namespace apiplanoacao.Services.PlanoDeAcao
 
             if (model.ResponsaveisTratativa != null && model.ResponsaveisTratativa.Any())
             {
-                var responsaveis = await _context.Usuarios
-                    .Where(u => model.ResponsaveisTratativa.Contains(u.Id))
-                    .ToListAsync();
-
-                responsaveisTratativa.AddRange(responsaveis);
+                foreach (var responsavelId in model.ResponsaveisTratativa)
+                {
+                    var responsavel = await _context.Usuarios.FindAsync(responsavelId);
+                    if (responsavel != null)
+                    {
+                        responsaveisTratativa.Add(responsavel);
+                    }
+                }
             }
 
             plano.ResponsaveisTratativa = responsaveisTratativa;
@@ -78,7 +104,9 @@ namespace apiplanoacao.Services.PlanoDeAcao
 
         public async Task<PlanoAcaoModel> PutAsync(PlanoAcaoViewModel model, int id)
         {
-            var plano = await _context.PlanoAcoes.FindAsync(id);
+            var plano = await _context.PlanoAcoes
+                .Include(p => p.ResponsaveisTratativa)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (plano == null)
             {
@@ -91,8 +119,28 @@ namespace apiplanoacao.Services.PlanoDeAcao
             {
                 return null;
             }
-
+            
             plano.AtualizaPlano(model);
+
+            plano.ResponsaveisTratativa.Clear();
+
+           // var responsaveisTratativa = new List<UsuarioModel>();
+
+            if (model.ResponsaveisTratativa != null && model.ResponsaveisTratativa.Any())
+            {
+                foreach (var responsavelId in model.ResponsaveisTratativa)
+                {
+                    var responsavel = await _context.Usuarios.FindAsync(responsavelId);
+
+                    if (responsavel != null)
+                    {
+                       // responsaveisTratativa.Add(responsavel);
+                       plano.ResponsaveisTratativa.Add(responsavel);
+                    }
+                }
+            }
+
+           // plano.ResponsaveisTratativa = responsaveisTratativa;
 
             await _context.SaveChangesAsync();
 

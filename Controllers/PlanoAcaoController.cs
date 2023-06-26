@@ -38,6 +38,19 @@ namespace apiplanoacao.Controllers
             return Ok(plano);
         }
 
+        [HttpGet("meu-plano/{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var plano = await _planoAcaoService.GetById(id);
+
+            if(plano == null)
+            {
+                return NotFound("Plano Inexistente");
+            }
+
+            return Ok(plano);
+        }
+
         [HttpPost("Criar-planos")]
         public async Task<IActionResult> PostAsync(PlanoAcaoViewModel model)
         {

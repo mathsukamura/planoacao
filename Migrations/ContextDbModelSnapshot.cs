@@ -22,23 +22,6 @@ namespace apiplanoacao.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("PlanoAcao_Responsavel", b =>
-                {
-                    b.Property<int>("id_planoacao")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_planoacao");
-
-                    b.Property<int>("id_responsavel")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_responsavel");
-
-                    b.HasKey("id_planoacao", "id_responsavel");
-
-                    b.HasIndex("id_responsavel");
-
-                    b.ToTable("PlanoAcao_Responsavel", (string)null);
-                });
-
             modelBuilder.Entity("apiplanoacao.Models.PlanoAcaoModel", b =>
                 {
                     b.Property<int>("Id")
@@ -115,19 +98,21 @@ namespace apiplanoacao.Migrations
                     b.ToTable("tb_usuario", (string)null);
                 });
 
-            modelBuilder.Entity("PlanoAcao_Responsavel", b =>
+            modelBuilder.Entity("planoAcao_responsavel", b =>
                 {
-                    b.HasOne("apiplanoacao.Models.UsuarioModel", null)
-                        .WithMany()
-                        .HasForeignKey("id_planoacao")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("id_planoacao")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_planoacao");
 
-                    b.HasOne("apiplanoacao.Models.PlanoAcaoModel", null)
-                        .WithMany()
-                        .HasForeignKey("id_responsavel")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("id_responsavel")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_responsavel");
+
+                    b.HasKey("id_planoacao", "id_responsavel");
+
+                    b.HasIndex("id_responsavel");
+
+                    b.ToTable("planoAcao_responsavel");
                 });
 
             modelBuilder.Entity("apiplanoacao.Models.PlanoAcaoModel", b =>
@@ -135,18 +120,33 @@ namespace apiplanoacao.Migrations
                     b.HasOne("apiplanoacao.Models.UsuarioModel", "ColaboradorAprovador")
                         .WithMany("PlanoacaoColaborador")
                         .HasForeignKey("ColaboradorId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("apiplanoacao.Models.UsuarioModel", "Usuario")
                         .WithMany("PlanoAcaos")
                         .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ColaboradorAprovador");
 
                     b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("planoAcao_responsavel", b =>
+                {
+                    b.HasOne("apiplanoacao.Models.PlanoAcaoModel", null)
+                        .WithMany()
+                        .HasForeignKey("id_planoacao")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("apiplanoacao.Models.UsuarioModel", null)
+                        .WithMany()
+                        .HasForeignKey("id_responsavel")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("apiplanoacao.Models.UsuarioModel", b =>

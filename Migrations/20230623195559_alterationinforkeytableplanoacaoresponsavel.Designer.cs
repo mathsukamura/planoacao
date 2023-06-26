@@ -12,8 +12,8 @@ using apiplanoacao.Data;
 namespace apiplanoacao.Migrations
 {
     [DbContext(typeof(ContextDb))]
-    [Migration("20230620204232_initialmigration")]
-    partial class initialmigration
+    [Migration("20230623195559_alterationinforkeytableplanoacaoresponsavel")]
+    partial class alterationinforkeytableplanoacaoresponsavel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,6 +51,10 @@ namespace apiplanoacao.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ColaboradorId")
+                        .HasColumnType("integer")
+                        .HasColumnName("colaborador_id");
+
                     b.Property<DateTime>("DataFim")
                         .HasColumnType("timestamp")
                         .HasColumnName("data_fim");
@@ -63,10 +67,6 @@ namespace apiplanoacao.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(240)")
                         .HasColumnName("descricao_acao");
-
-                    b.Property<int>("IdColaboradorAprovador")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_colaborador_aprovador");
 
                     b.Property<int>("IdUsuario")
                         .HasColumnType("integer")
@@ -82,7 +82,7 @@ namespace apiplanoacao.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdColaboradorAprovador");
+                    b.HasIndex("ColaboradorId");
 
                     b.HasIndex("IdUsuario");
 
@@ -105,7 +105,7 @@ namespace apiplanoacao.Migrations
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("Varchar(24)")
+                        .HasColumnType("Varchar(100)")
                         .HasColumnName("nome");
 
                     b.Property<string>("Senha")
@@ -120,16 +120,16 @@ namespace apiplanoacao.Migrations
 
             modelBuilder.Entity("PlanoAcao_Responsavel", b =>
                 {
-                    b.HasOne("apiplanoacao.Models.UsuarioModel", null)
-                        .WithMany()
-                        .HasForeignKey("id_planoacao")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("apiplanoacao.Models.PlanoAcaoModel", null)
                         .WithMany()
+                        .HasForeignKey("id_planoacao")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("apiplanoacao.Models.UsuarioModel", null)
+                        .WithMany()
                         .HasForeignKey("id_responsavel")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -137,7 +137,7 @@ namespace apiplanoacao.Migrations
                 {
                     b.HasOne("apiplanoacao.Models.UsuarioModel", "ColaboradorAprovador")
                         .WithMany("PlanoacaoColaborador")
-                        .HasForeignKey("IdColaboradorAprovador")
+                        .HasForeignKey("ColaboradorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

@@ -10,6 +10,8 @@ namespace apiplanoacao.Services.PlanoDeAcao.Interface
     {
         public Task<IList<PlanoAcaoModel>> GetAsync();
 
+        public Task<PlanoAcaoModel> GetById(int id);
+
         public Task<PlanoAcaoModel> PostAsync(PlanoAcaoViewModel model);
 
         public Task<PlanoAcaoModel> PutAsync(PlanoAcaoViewModel model, int id);

@@ -44,7 +44,7 @@ namespace apiplanoacao.Models
             {
                 return;
             }
-
+            ColaboradorId = viewModel.ColaboradorAprovador;
             DescricaoAcao = viewModel.DescricaoAcao;
             DataInicio = viewModel.DataInicio;
             DataFim = viewModel.DataFim;

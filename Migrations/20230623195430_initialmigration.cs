@@ -18,7 +18,7 @@ namespace apiplanoacao.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nome = table.Column<string>(type: "Varchar(24)", nullable: false),
+                    nome = table.Column<string>(type: "Varchar(100)", nullable: false),
                     email = table.Column<string>(type: "Varchar(64)", nullable: false),
                     senha = table.Column<string>(type: "Varchar(24)", nullable: false)
                 },
@@ -34,7 +34,7 @@ namespace apiplanoacao.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     id_usuario = table.Column<int>(type: "integer", nullable: false),
-                    id_colaborador_aprovador = table.Column<int>(type: "integer", nullable: false),
+                    colaborador_id = table.Column<int>(type: "integer", nullable: false),
                     responsavel_tratativa = table.Column<int>(type: "integer", nullable: false),
                     descricao_acao = table.Column<string>(type: "varchar(240)", nullable: false),
                     data_inicio = table.Column<DateTime>(type: "timestamp", nullable: false),
@@ -45,8 +45,8 @@ namespace apiplanoacao.Migrations
                 {
                     table.PrimaryKey("PK_tb_planoacao", x => x.id);
                     table.ForeignKey(
-                        name: "FK_tb_planoacao_tb_usuario_id_colaborador_aprovador",
-                        column: x => x.id_colaborador_aprovador,
+                        name: "FK_tb_planoacao_tb_usuario_colaborador_id",
+                        column: x => x.colaborador_id,
                         principalTable: "tb_usuario",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
@@ -62,25 +62,44 @@ namespace apiplanoacao.Migrations
                 name: "PlanoAcao_Responsavel",
                 columns: table => new
                 {
+                    planoacaoid = table.Column<int>(type: "integer", nullable: false),
+                    responsaveltratativaid = table.Column<int>(type: "integer", nullable: false),
                     id_planoacao = table.Column<int>(type: "integer", nullable: false),
                     id_responsavel = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PlanoAcao_Responsavel", x => new { x.id_planoacao, x.id_responsavel });
+                    table.PrimaryKey("PK_PlanoAcao_Responsavel", x => new { x.planoacaoid, x.responsaveltratativaid });
                     table.ForeignKey(
-                        name: "FK_PlanoAcao_Responsavel_tb_planoacao_id_responsavel",
-                        column: x => x.id_responsavel,
+                        name: "FK_PlanoAcao_Responsavel_tb_planoacao_id_planoacao",
+                        column: x => x.id_planoacao,
                         principalTable: "tb_planoacao",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_PlanoAcao_Responsavel_tb_usuario_id_planoacao",
-                        column: x => x.id_planoacao,
+                        name: "FK_PlanoAcao_Responsavel_tb_planoacao_planoacaoid",
+                        column: x => x.planoacaoid,
+                        principalTable: "tb_planoacao",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PlanoAcao_Responsavel_tb_usuario_id_responsavel",
+                        column: x => x.id_responsavel,
                         principalTable: "tb_usuario",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PlanoAcao_Responsavel_tb_usuario_responsaveltratativaid",
+                        column: x => x.responsaveltratativaid,
+                        principalTable: "tb_usuario",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PlanoAcao_Responsavel_id_planoacao",
+                table: "PlanoAcao_Responsavel",
+                column: "id_planoacao");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PlanoAcao_Responsavel_id_responsavel",
@@ -88,9 +107,14 @@ namespace apiplanoacao.Migrations
                 column: "id_responsavel");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_planoacao_id_colaborador_aprovador",
+                name: "IX_PlanoAcao_Responsavel_responsaveltratativaid",
+                table: "PlanoAcao_Responsavel",
+                column: "responsaveltratativaid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tb_planoacao_colaborador_id",
                 table: "tb_planoacao",
-                column: "id_colaborador_aprovador");
+                column: "colaborador_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tb_planoacao_id_usuario",

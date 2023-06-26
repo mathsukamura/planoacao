@@ -1,6 +1,7 @@
 ﻿using apiplanoacao.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Collections.Generic;
 
 namespace apiplanoacao.Data.Map
 {
@@ -26,7 +27,6 @@ namespace apiplanoacao.Data.Map
                 .HasColumnName("senha")
                 .IsRequired()
                 .HasColumnType("Varchar(24)");
-
         }
     }
 }

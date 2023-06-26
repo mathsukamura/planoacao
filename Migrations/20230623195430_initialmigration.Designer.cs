@@ -12,8 +12,8 @@ using apiplanoacao.Data;
 namespace apiplanoacao.Migrations
 {
     [DbContext(typeof(ContextDb))]
-    [Migration("20230622212007_alteratioinforkeycolaborador")]
-    partial class alteratioinforkeycolaborador
+    [Migration("20230623195430_initialmigration")]
+    partial class initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,6 +27,14 @@ namespace apiplanoacao.Migrations
 
             modelBuilder.Entity("PlanoAcao_Responsavel", b =>
                 {
+                    b.Property<int>("planoacaoid")
+                        .HasColumnType("integer")
+                        .HasColumnName("planoacaoid");
+
+                    b.Property<int>("responsaveltratativaid")
+                        .HasColumnType("integer")
+                        .HasColumnName("responsaveltratativaid");
+
                     b.Property<int>("id_planoacao")
                         .HasColumnType("integer")
                         .HasColumnName("id_planoacao");
@@ -35,9 +43,13 @@ namespace apiplanoacao.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_responsavel");
 
-                    b.HasKey("id_planoacao", "id_responsavel");
+                    b.HasKey("planoacaoid", "responsaveltratativaid");
+
+                    b.HasIndex("id_planoacao");
 
                     b.HasIndex("id_responsavel");
+
+                    b.HasIndex("responsaveltratativaid");
 
                     b.ToTable("PlanoAcao_Responsavel");
                 });
@@ -120,16 +132,28 @@ namespace apiplanoacao.Migrations
 
             modelBuilder.Entity("PlanoAcao_Responsavel", b =>
                 {
-                    b.HasOne("apiplanoacao.Models.UsuarioModel", null)
+                    b.HasOne("apiplanoacao.Models.PlanoAcaoModel", null)
                         .WithMany()
                         .HasForeignKey("id_planoacao")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("apiplanoacao.Models.UsuarioModel", null)
+                        .WithMany()
+                        .HasForeignKey("id_responsavel")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("apiplanoacao.Models.PlanoAcaoModel", null)
                         .WithMany()
-                        .HasForeignKey("id_responsavel")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("planoacaoid")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("apiplanoacao.Models.UsuarioModel", null)
+                        .WithMany()
+                        .HasForeignKey("responsaveltratativaid")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -138,13 +162,13 @@ namespace apiplanoacao.Migrations
                     b.HasOne("apiplanoacao.Models.UsuarioModel", "ColaboradorAprovador")
                         .WithMany("PlanoacaoColaborador")
                         .HasForeignKey("ColaboradorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("apiplanoacao.Models.UsuarioModel", "Usuario")
                         .WithMany("PlanoAcaos")
                         .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("ColaboradorAprovador");

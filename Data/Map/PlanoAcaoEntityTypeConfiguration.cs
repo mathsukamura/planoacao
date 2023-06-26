@@ -15,13 +15,11 @@ namespace apiplanoacao.Data.Map
 
             builder.HasOne(p => p.ColaboradorAprovador)
                 .WithMany(p => p.PlanoacaoColaborador)
-                .HasForeignKey(p => p.ColaboradorId)
-                .OnDelete(DeleteBehavior.Restrict); 
+                .HasForeignKey(p => p.ColaboradorId); 
 
             builder.HasOne(p => p.Usuario)
                 .WithMany(p => p.PlanoAcaos)
-                .HasForeignKey(p => p.IdUsuario)
-                .OnDelete(DeleteBehavior.Restrict); 
+                .HasForeignKey(p => p.IdUsuario); 
 
             builder.Property(p => p.DescricaoAcao)
                 .HasColumnName("descricao_acao")
@@ -46,17 +44,16 @@ namespace apiplanoacao.Data.Map
             builder.HasMany(x => x.ResponsaveisTratativa)
                 .WithMany(x => x.PlanoAcaoResponsavel)
                 .UsingEntity<Dictionary<string, object>>(
-                    "PlanoAcao_Responsavel",
+                    "planoAcao_responsavel",
                     j => j
                         .HasOne<UsuarioModel>()
                         .WithMany()
-                        .HasForeignKey("id_planoacao"),
+                        .HasForeignKey("id_responsavel"),
 
                     j => j
                         .HasOne<PlanoAcaoModel>()
                         .WithMany()
-                        .HasForeignKey("id_responsavel"));
-
+                        .HasForeignKey("id_planoacao"));
         }
     }
 }
