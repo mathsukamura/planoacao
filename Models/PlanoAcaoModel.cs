@@ -16,13 +16,18 @@ namespace apiplanoacao.Models
 
     public class PlanoAcaoModel
     {
+
+        public PlanoAcaoModel()
+        {
+            Status = EStatus.Aberto;
+            ResponsaveisTratativa = new List<UsuarioModel>();
+        }
+
         public int Id { get; set; }
         
         public int IdUsuario { get; set; }
 
         public int ColaboradorId { get; set; }
-
-        public int ResponsavelTratativa { get; set; }
 
         public string DescricaoAcao { get; set; }
 
@@ -30,9 +35,9 @@ namespace apiplanoacao.Models
 
         public DateTime DataFim { get; set; }
 
-        public EStatus Status { get; set; }
+        public EStatus Status { get;  set; }
 
-        public ICollection<UsuarioModel> ResponsaveisTratativa { get; set; }
+        public ICollection<UsuarioModel> ResponsaveisTratativa { get; private set; }
 
         public UsuarioModel ColaboradorAprovador { get; set; }
 
@@ -44,7 +49,7 @@ namespace apiplanoacao.Models
             {
                 return;
             }
-            ColaboradorId = viewModel.ColaboradorAprovador;
+            ColaboradorId = viewModel.IdColaboradorAprovador;
             DescricaoAcao = viewModel.DescricaoAcao;
             DataInicio = viewModel.DataInicio;
             DataFim = viewModel.DataFim;

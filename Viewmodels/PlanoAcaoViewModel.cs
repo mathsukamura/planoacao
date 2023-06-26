@@ -11,7 +11,7 @@ namespace apiplanoacao.Viewmodels
 {
     public class PlanoAcaoViewModel
     {
-        public int ColaboradorAprovador { get; set; }
+        public int IdColaboradorAprovador { get; set; }
 
         public List<int> ResponsaveisTratativa { get; set; }
 
@@ -25,11 +25,10 @@ namespace apiplanoacao.Viewmodels
         {
             return new PlanoAcaoModel
             {
-                ColaboradorId = ColaboradorAprovador,
+                ColaboradorId = IdColaboradorAprovador,
                 DescricaoAcao = DescricaoAcao,
                 DataInicio = DataInicio,
-                DataFim = DataFim,
-                Status = EStatus.Aberto
+                DataFim = DataFim        
             };
 
         }

@@ -21,9 +21,9 @@ namespace apiplanoacao.Controllers
             _tokenService = tokenService;
         }
         [HttpPost]
-        public async Task<ActionResult> AutenticacaoAsync(Login logins)
+        public async Task<ActionResult> AutenticacaoAsync(Login login)
         {
-            var usuario = await _loginService.AutenticacaoAsync(logins);
+            var usuario = await _loginService.AutenticacaoAsync(login);
 
             if (usuario == null)
             {

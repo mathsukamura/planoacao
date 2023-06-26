@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace apiplanoacao.Controllers
@@ -25,33 +26,28 @@ namespace apiplanoacao.Controllers
             _planoAcaoRegrasService = planoAcaoRegrasService;
         }
 
-        [HttpGet("meus-planos")]
+        [HttpGet("")]
         public async Task<IActionResult> GetAsync()
         {
             var plano = await _planoAcaoService.GetAsync();
 
-            if(plano == null)
-            {
-                return NotFound("Não existe plano");
-            }
-
             return Ok(plano);
         }
 
-        [HttpGet("meu-plano/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var plano = await _planoAcaoService.GetById(id);
 
-            if(plano == null)
+            if (plano == null)
             {
-                return NotFound("Plano Inexistente");
+                return NotFound("Esse plano de ação não existe ou você não tem permissão de acesso.");
             }
 
             return Ok(plano);
         }
 
-        [HttpPost("Criar-planos")]
+        [HttpPost("")]
         public async Task<IActionResult> PostAsync(PlanoAcaoViewModel model)
         {
             var plano = await _planoAcaoService.PostAsync(model);
@@ -59,20 +55,32 @@ namespace apiplanoacao.Controllers
             return Ok(plano.Id);
         }
 
-        [HttpPut("alterar-plano/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutAsync(PlanoAcaoViewModel model, int id)
         {
             var plano = await _planoAcaoService.PutAsync(model, id);
 
-            return Ok(plano);
+            if (plano != null)
+            {
+                var mensagem = $"O plano de ação {id} foi alterado com sucesso.";
+                return Ok(mensagem);
+            }
+
+            return NotFound();
         }
 
-        [HttpDelete("deletar-plano")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
             var plano = await _planoAcaoService.DeleteAsync(id);
 
-            return Ok(true);
+            if (plano)
+            {
+                var mensagem = $"O plano de ação {id} foi deletado com sucesso.";
+                return Ok(mensagem);
+            }
+
+            return NotFound();
         }
 
         [HttpGet("tratativas-pendentes")]
@@ -91,14 +99,17 @@ namespace apiplanoacao.Controllers
             return aprovacoes;
         }
 
-
-        [HttpPut("Alterar-tratativas")]
-        public async Task<bool> AlterarStatusPlanoAcaoCompleto(List<int> ids, EStatus novoStatus)
+        [HttpPut("alterar-status/{id}")]
+        public async Task<IActionResult> AlterarStustusasync(int id, EStatus novoStatus)
         {
-            var tratativas = await _planoAcaoRegrasService.AlterarStatusPlanoAcaoCompleto(ids, novoStatus);
+            var Tratativa = await _planoAcaoRegrasService.AlterarStatusPlanoAcao(id, novoStatus);
 
-            return tratativas;
+            if(Tratativa== null)
+            {
+                return BadRequest("não é possivel alterar");
+            }
+
+            return Ok(Tratativa);
         }
-
     }
 }

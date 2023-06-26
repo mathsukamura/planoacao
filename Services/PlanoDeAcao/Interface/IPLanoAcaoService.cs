@@ -3,12 +3,13 @@ using apiplanoacao.Viewmodels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static apiplanoacao.Services.PlanoDeAcao.PlanosAcaoRegrasService;
 
 namespace apiplanoacao.Services.PlanoDeAcao.Interface
 {
     public interface IPlanoAcaoService
     {
-        public Task<IList<PlanoAcaoModel>> GetAsync();
+        public Task<IEnumerable<PlanoAcaoModel>> GetAsync();
 
         public Task<PlanoAcaoModel> GetById(int id);
 
@@ -24,7 +25,9 @@ namespace apiplanoacao.Services.PlanoDeAcao.Interface
 
         public Task<IList<PlanoAcaoModel>> GetAprovacoesPendentesAsync(EStatus? status, DateTime? dataInicio, DateTime? dataFim);
 
-        public Task<bool> AlterarStatusPlanoAcaoCompleto(List<int> ids, EStatus novoStatus);
+        //public Task<bool> AlterarStatusPlanoAcaoCompleto(List<int> ids, EStatus novoStatus);
+
+        public Task<AlterarStatusPlanoAcaoResult> AlterarStatusPlanoAcao(int id, EStatus novoStatus);
 
     }
 }

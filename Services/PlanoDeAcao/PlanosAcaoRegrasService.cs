@@ -33,7 +33,8 @@ namespace apiplanoacao.Services.PlanoDeAcao
                 return null;
             }
 
-            var query = _context.PlanoAcoes.Where(p => p.ResponsavelTratativa == responsavel.Id);
+            var query = _context.PlanoAcoes
+                .Where(p => p.ResponsaveisTratativa.Contains(responsavel));
 
             if (status != null)
             {
@@ -86,7 +87,63 @@ namespace apiplanoacao.Services.PlanoDeAcao
             return aprovacoesPendentes;
         }
 
-        public async Task<bool> AlterarStatusPlanoAcaoCompleto(List<int> ids, EStatus novoStatus)
+        //public async Task<bool> AlterarStatusPlanoAcaoCompleto(List<int> ids, EStatus novoStatus)
+        //{
+        //    var idUsuario = _obterUsuariorServices.ObterUsuarioId();
+
+        //    var responsavel = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == idUsuario);
+
+        //    if (responsavel == null)
+        //    {
+        //        return false;
+        //    }
+
+        //    var planosAcao = await _context.PlanoAcoes
+        //        .Include(p => p.ResponsaveisTratativa)
+        //        .Where(p => ids.Contains(p.Id) && p.ResponsaveisTratativa.Contains(responsavel))
+        //        .ToListAsync();
+
+        //    if (planosAcao == null || planosAcao.Count == 0)
+        //    {
+        //        return false;
+        //    }
+
+        //    foreach (var planoAcao in planosAcao)
+        //    {
+        //        if (novoStatus == EStatus.Concluído || novoStatus == EStatus.Reprovado)
+        //        {
+        //            var colaboradorAprovador = await _context.Usuarios.FindAsync(planoAcao.ColaboradorAprovador);
+
+        //            if (colaboradorAprovador == null || colaboradorAprovador.Id != responsavel.Id)
+        //            {
+        //                return false;
+        //            }
+        //        }
+
+        //        if (planoAcao.Status == EStatus.Aberto && novoStatus == EStatus.EmAndamento)
+        //        {
+        //            planoAcao.Status = EStatus.EmAndamento;
+        //        }
+        //        else if (planoAcao.Status == EStatus.Aberto && novoStatus == EStatus.AguardandoAprovacao)
+        //        {
+        //            planoAcao.Status = EStatus.AguardandoAprovacao;
+        //        }
+        //        else if (novoStatus == EStatus.Concluído || novoStatus == EStatus.Reprovado)
+        //        {
+        //            planoAcao.Status = novoStatus;
+        //        }
+        //        else
+        //        {
+        //            return false;
+        //        }
+        //    }
+
+        //    await _context.SaveChangesAsync();
+
+        //    return true;
+        //}
+
+        public async Task<AlterarStatusPlanoAcaoResult> AlterarStatusPlanoAcao(int id, EStatus novoStatus)
         {
             var idUsuario = _obterUsuariorServices.ObterUsuarioId();
 
@@ -94,94 +151,74 @@ namespace apiplanoacao.Services.PlanoDeAcao
 
             if (responsavel == null)
             {
-                return false;
+                return new AlterarStatusPlanoAcaoResult { Sucesso = false, Mensagem = "Responsável não encontrado" };
             }
 
-            var planosAcao = await _context.PlanoAcoes
-                .Where(p => ids.Contains(p.Id) && p.ResponsavelTratativa == responsavel.Id)
-                .ToListAsync();
+            var planoAcao = await ObterPlanoAcaoPorIdEUsuario(id, responsavel);
 
-            if (planosAcao == null || planosAcao.Count == 0)
+            if (planoAcao == null)
             {
-                return false;
+                return new AlterarStatusPlanoAcaoResult { Sucesso = false, Mensagem = "Plano de ação não existe" };
             }
 
-            foreach (var planoAcao in planosAcao)
+            if (!AlterarStatus(planoAcao, novoStatus, idUsuario))
             {
-                if (novoStatus == EStatus.Concluído || novoStatus == EStatus.Reprovado)
-                {
-                    var colaboradorAprovador = await _context.Usuarios.FindAsync(planoAcao.ColaboradorAprovador);
-
-                    if (colaboradorAprovador == null || colaboradorAprovador.Id != responsavel.Id)
-                    {
-                        return false;
-                    }
-                }
-
-                if (planoAcao.Status == EStatus.Aberto && novoStatus == EStatus.EmAndamento)
-                {
-                    planoAcao.Status = EStatus.EmAndamento;
-                }
-                else if (planoAcao.Status == EStatus.Aberto && novoStatus == EStatus.AguardandoAprovacao)
-                {
-                    planoAcao.Status = EStatus.AguardandoAprovacao;
-                }
-                else if (novoStatus == EStatus.Concluído || novoStatus == EStatus.Reprovado)
-                {
-                    planoAcao.Status = novoStatus;
-                }
-                else
-                {
-                    return false;
-                }
+                return new AlterarStatusPlanoAcaoResult { Sucesso = false, Mensagem = "Erro ao alterar status do plano de ação" };
             }
+
+            AtualizarStatusPlanoAcao(planoAcao, novoStatus);
 
             await _context.SaveChangesAsync();
 
-            return true;
+            return new AlterarStatusPlanoAcaoResult { Sucesso = true, Mensagem = $"O plano de ação {id} foi alterado para {novoStatus}" };
         }
 
-        public async Task<bool> AlterarStatusPlanoAcao(List<int> ids, EStatus novoStatus)
+        public class AlterarStatusPlanoAcaoResult
         {
-            var idUsuario = _obterUsuariorServices.ObterUsuarioId();
-
-            var responsavel = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == idUsuario);
-
-            if (responsavel == null)
-            {
-                return false;
-            }
-
-            var planosAcao = await _context.PlanoAcoes
-                .Where(p => ids.Contains(p.Id) && p.ResponsavelTratativa == responsavel.Id)
-                .ToListAsync();
-
-            if (planosAcao == null || planosAcao.Count == 0)
-            {
-                return false;
-            }
-
-            foreach (var planoAcao in planosAcao)
-            {
-                if (planoAcao.Status == EStatus.Aberto && novoStatus == EStatus.EmAndamento)
-                {
-                    planoAcao.Status = EStatus.EmAndamento;
-                }
-                else if (planoAcao.Status == EStatus.Aberto && novoStatus == EStatus.AguardandoAprovacao)
-                {
-                    planoAcao.Status = EStatus.AguardandoAprovacao;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            await _context.SaveChangesAsync();
-
-            return true;
+            public bool Sucesso { get; set; }
+            public string Mensagem { get; set; }
         }
 
+        private async Task<PlanoAcaoModel> ObterPlanoAcaoPorIdEUsuario(int id, UsuarioModel responsavel)
+        {
+            
+            return await _context.PlanoAcoes
+                .FirstOrDefaultAsync(p => p.Id == id && p.ResponsaveisTratativa.Contains(responsavel));
 
+            
+        }
+
+        private bool AlterarStatus(PlanoAcaoModel planoAcao, EStatus novoStatus, int idUsuario)
+        {
+            if (planoAcao.Status == EStatus.Aberto && novoStatus == EStatus.EmAndamento)
+            {
+                return true;
+            }
+
+            if (planoAcao.Status == EStatus.EmAndamento &&
+                novoStatus == EStatus.AguardandoAprovacao)
+            {
+                return true;
+            }
+
+            if (PermiteAprovarOuReprovarPlano(planoAcao, novoStatus, idUsuario))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void AtualizarStatusPlanoAcao(PlanoAcaoModel planoAcao, EStatus novoStatus)
+        {
+            planoAcao.Status = novoStatus;
+        }
+
+        private bool PermiteAprovarOuReprovarPlano(PlanoAcaoModel planoAcao, EStatus novoStatus, int idUsuario)
+        {
+            return (planoAcao.Status == EStatus.AguardandoAprovacao &&
+                (novoStatus == EStatus.Concluído || novoStatus == EStatus.Reprovado) &&
+                (planoAcao.ColaboradorAprovador.Id == idUsuario));
+        }
     }
 }

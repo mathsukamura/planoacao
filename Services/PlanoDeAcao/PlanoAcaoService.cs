@@ -10,6 +10,7 @@ using System.Numerics;
 using apiplanoacao.Services.PlanoDeAcao.Interface;
 using System.Globalization;
 using System;
+using System.Collections;
 
 namespace apiplanoacao.Services.PlanoDeAcao
 {
@@ -25,13 +26,13 @@ namespace apiplanoacao.Services.PlanoDeAcao
             _obterUsuariorServices = obterUsuariorServices;
         }
 
-        public async Task<IList<PlanoAcaoModel>> GetAsync()
+        public async Task<IEnumerable<PlanoAcaoModel>> GetAsync()
         {
             var usuario = await ValidaUsuario();
 
-            if ( usuario == null)
+            if (usuario == null)
             {
-                return null;
+                return Enumerable.Empty<PlanoAcaoModel>();
             }
 
             var planoacao = await _context.PlanoAcoes.
@@ -39,11 +40,7 @@ namespace apiplanoacao.Services.PlanoDeAcao
                 .AsNoTracking()
                 .ToListAsync();
 
-            if (planoacao == null)
-            {
-                return null;
-            }
-
+           
             return (planoacao);
 
         }
@@ -68,7 +65,6 @@ namespace apiplanoacao.Services.PlanoDeAcao
             }
 
             return (plano);
-
         }
 
         public async Task<PlanoAcaoModel> PostAsync(PlanoAcaoViewModel model)
@@ -77,21 +73,18 @@ namespace apiplanoacao.Services.PlanoDeAcao
 
             var usuario = await ValidaUsuario();
 
-            var responsaveisTratativa = new List<UsuarioModel>();
-
-            if (model.ResponsaveisTratativa != null && model.ResponsaveisTratativa.Any())
+            if (model?.ResponsaveisTratativa?.Any() ?? false)
             {
                 foreach (var responsavelId in model.ResponsaveisTratativa)
                 {
                     var responsavel = await _context.Usuarios.FindAsync(responsavelId);
+
                     if (responsavel != null)
                     {
-                        responsaveisTratativa.Add(responsavel);
+                        plano.ResponsaveisTratativa.Add(responsavel);
                     }
                 }
             }
-
-            plano.ResponsaveisTratativa = responsaveisTratativa;
 
             plano.IdUsuario = usuario.Id;
 
@@ -101,6 +94,7 @@ namespace apiplanoacao.Services.PlanoDeAcao
 
             return plano;
         }
+
 
         public async Task<PlanoAcaoModel> PutAsync(PlanoAcaoViewModel model, int id)
         {
@@ -119,28 +113,32 @@ namespace apiplanoacao.Services.PlanoDeAcao
             {
                 return null;
             }
-            
+
             plano.AtualizaPlano(model);
 
-            plano.ResponsaveisTratativa.Clear();
+            await AlteraResponsaveisPelaTratativa(plano, model.ResponsaveisTratativa);
 
-           // var responsaveisTratativa = new List<UsuarioModel>();
+            //var responsaveisTratativa = await _context.Usuarios
+            //    .Where(u => model.ResponsaveisTratativa.Contains(u.Id))
+            //    .ToListAsync();
 
-            if (model.ResponsaveisTratativa != null && model.ResponsaveisTratativa.Any())
-            {
-                foreach (var responsavelId in model.ResponsaveisTratativa)
-                {
-                    var responsavel = await _context.Usuarios.FindAsync(responsavelId);
+            //var responsaveisRemover = plano.ResponsaveisTratativa
+            //    .Where(r => !responsaveisTratativa.Contains(r))
+            //    .ToList();
 
-                    if (responsavel != null)
-                    {
-                       // responsaveisTratativa.Add(responsavel);
-                       plano.ResponsaveisTratativa.Add(responsavel);
-                    }
-                }
-            }
+            //foreach (var responsavelRemover in responsaveisRemover)
+            //{
+            //    plano.ResponsaveisTratativa.Remove(responsavelRemover);
+            //}
 
-           // plano.ResponsaveisTratativa = responsaveisTratativa;
+            //var responsaveisAdicionar = responsaveisTratativa
+            //    .Where(r => !plano.ResponsaveisTratativa.Contains(r))
+            //    .ToList();
+
+            //foreach (var responsavelAdicionar in responsaveisAdicionar)
+            //{
+            //    plano.ResponsaveisTratativa.Add(responsavelAdicionar);
+            //}
 
             await _context.SaveChangesAsync();
 
@@ -179,57 +177,28 @@ namespace apiplanoacao.Services.PlanoDeAcao
             return usuario;
         }
 
-        //public async Task<bool> AlterarStatusPlanoAcao(PlanoAcaoModel model ,int id)
-        //{
-        //    var planoAcao = await _context.PlanoAcoes.FindAsync(id);
+        private async Task AlteraResponsaveisPelaTratativa(PlanoAcaoModel plano, List<int> responsaveisTratativa)
+        {
+            var novosResponsaveis = responsaveisTratativa.Where(id => !plano.ResponsaveisTratativa.Any(db => db.Id == id)).ToList();
 
-        //    if (planoAcao == null)
-        //    {
-        //        // Plano de ação não encontrado
-        //        return false;
-        //    }
+            foreach (var idResponsavel in novosResponsaveis)
+            {
+                var colaborador = await _context.Usuarios.FirstOrDefaultAsync(x => x.Id == idResponsavel);
 
-        //    var usuario = await ValidaUsuario();
+                if (colaborador != null)
+                {
+                    plano.ResponsaveisTratativa.Add(colaborador);
+                }
+            }
 
-        //    // Verifica se o usuário é responsável pela tratativa
-        //    if (planoAcao.ResponsavelTratativa != usuario.Id)
-        //    {
-        //        // Usuário não é o responsável pela tratativa
-        //        return false;
-        //    }
+            var responsaveisRemover = plano.ResponsaveisTratativa
+                .Where(r => !responsaveisTratativa.Contains(r.Id))
+                .ToList();
 
-        //    if (planoAcao.Status == EStatus.Aberto && model.Status == EStatus.EmAndamento)
-        //    {
-        //        planoAcao.Status = EStatus.EmAndamento;
-        //    }
-
-        //    else if (planoAcao.Status == EStatus.EmAndamento && model.Status == EStatus.AguardandoAprovacao)
-        //    {
-        //        planoAcao.Status = EStatus.AguardandoAprovacao;
-        //    }
-
-        //    else if (planoAcao.Status == EStatus.AguardandoAprovacao && (model.Status == EStatus.Concluído || model.Status == EStatus.Reprovado))
-        //    {
-        //        var colaboradorAprovador = await _context.Usuarios.FindAsync(planoAcao.ColaboradorAprovador);
-
-        //        if (colaboradorAprovador == null || colaboradorAprovador.Id != usuario.Id)
-        //        { 
-        //            return false;
-        //        }
-
-        //        planoAcao.Status = model.Status;
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-
-
-        //    await _context.SaveChangesAsync();
-
-        //    return true;
-        //}
-
-
+            foreach (var responsavelRemover in responsaveisRemover)
+            {
+                plano.ResponsaveisTratativa.Remove(responsavelRemover);
+            }
+        }
     }
 }

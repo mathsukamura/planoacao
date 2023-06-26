@@ -15,16 +15,11 @@ namespace apiplanoacao.Services.Acesso
 
         public LoginService(ContextDb context) => _context = context;
 
-        public async Task<UsuarioModel> AutenticacaoAsync(Login logins)
+        public async Task<UsuarioModel> AutenticacaoAsync(Login login)
         {
             var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(x => x.Email == logins.Email
-                && x.Senha == logins.Senha);
-
-            if (usuario == null)
-            {
-                return null;
-            }
+                .FirstOrDefaultAsync(x => x.Email == login.Email
+                && x.Senha == login.Senha);
 
             return usuario;
         }

@@ -12,7 +12,7 @@ namespace apiplanoacao.Services.CadastroUsuario
     {
         Task<UsuarioModel> PostAsync(UsuarioViewModel model);
 
-        Task<IList<UsuarioModel>> GetAsync();
+        Task<IList<UsuarioModel>> GetAllAsync();
     }
     public class CadastrarUsuarioService : ICadastroUsuarioService
     {
@@ -24,11 +24,6 @@ namespace apiplanoacao.Services.CadastroUsuario
         {
             var usuario = model.CriarUsuario();
 
-            if(usuario == null)
-            {
-                return null;
-            }
-
             await _context.AddAsync(usuario);
 
             await _context.SaveChangesAsync();
@@ -36,7 +31,7 @@ namespace apiplanoacao.Services.CadastroUsuario
             return usuario;
         }
 
-        public async Task<IList<UsuarioModel>> GetAsync()
+        public async Task<IList<UsuarioModel>> GetAllAsync()
         {
             var usuario = await _context.Usuarios.AsNoTracking().ToListAsync();
 

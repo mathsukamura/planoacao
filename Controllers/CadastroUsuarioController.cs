@@ -20,17 +20,26 @@ namespace apiplanoacao.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Postasync(UsuarioViewModel Model)
+        public async Task<IActionResult> PostAsync(UsuarioViewModel model)
         {
-            var usuario = await _cadastroUsuario.PostAsync(Model);
+            ValidadorUsuario validador = new ValidadorUsuario();
+
+            var result = validador.Validate(model);
+
+            if (!result.IsValid)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            var usuario = await _cadastroUsuario.PostAsync(model);
 
             return Created($"v1/usuario/{usuario.Id}", new { usuario.Id });
         }
 
         [HttpGet("Cadastros")]
-        public async Task<ActionResult> GetAsync()
+        public async Task<ActionResult> GetAllAsync()
         {
-            var usuario = await _cadastroUsuario.GetAsync();
+            var usuario = await _cadastroUsuario.GetAllAsync();
 
             return Ok(usuario);
         }

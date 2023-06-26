@@ -70,6 +70,7 @@ namespace apiplanoacao.Infra
             catch (Exception ex)
             {
                 httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                await httpContext.Response.WriteAsync("Você não está autorizado.");
             }
         }
     }
@@ -98,6 +99,7 @@ namespace apiplanoacao.Infra
                 if (!httpContext.User.Identity.IsAuthenticated)
                 {
                     httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    await httpContext.Response.WriteAsync("Você não está logado");
                     return;
                 }
 
@@ -122,8 +124,8 @@ namespace apiplanoacao.Infra
             }
             catch (Exception ex)
             {
-
                 httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                await httpContext.Response.WriteAsync("Você não está autorizado.");
             }
         }
     }

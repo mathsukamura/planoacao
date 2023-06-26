@@ -1,6 +1,7 @@
 ﻿using apiplanoacao.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -34,6 +35,9 @@ namespace apiplanoacao.Data
             }
         }
     }
+
+
+
     public static class StringExtensions
     {
         public static string ToSnakeCase(this string input)
