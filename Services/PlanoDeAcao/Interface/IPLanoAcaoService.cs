@@ -23,11 +23,7 @@ namespace apiplanoacao.Services.PlanoDeAcao.Interface
     {
         public Task<IList<PlanoAcaoModel>> GetTratativasPentendesAsync(EStatus? status, DateTime? dataInicio, DateTime? dataFim);
 
-        public Task<IList<PlanoAcaoModel>> GetAprovacoesPendentesAsync(EStatus? status, DateTime? dataInicio, DateTime? dataFim);
-
-        //public Task<bool> AlterarStatusPlanoAcaoCompleto(List<int> ids, EStatus novoStatus);
-
-        public Task<AlterarStatusPlanoAcaoResult> AlterarStatusPlanoAcao(int id, EStatus novoStatus);
+        public Task<bool> AlterarStatusPlanoAcao(int id, EStatus novoStatus);
 
     }
 }

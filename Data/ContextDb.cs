@@ -1,5 +1,6 @@
 ﻿using apiplanoacao.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
@@ -34,9 +35,12 @@ namespace apiplanoacao.Data
                 }
             }
         }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()))
+                .EnableSensitiveDataLogging();
+        }
     }
-
-
 
     public static class StringExtensions
     {

@@ -1,7 +1,9 @@
-﻿using apiplanoacao.Services.Acesso;
+﻿using apiplanoacao.Interfaces;
+using apiplanoacao.Services.Acesso;
 using apiplanoacao.Services.CadastroUsuario;
 using apiplanoacao.Services.CapturaUsuario;
 using apiplanoacao.Services.GerarToken;
+using apiplanoacao.Services.Notification;
 using apiplanoacao.Services.PlanoDeAcao;
 using apiplanoacao.Services.PlanoDeAcao.Interface;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +17,9 @@ namespace apiplanoacao
         {
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<ICadastroUsuarioService, CadastrarUsuarioService>();
+            services.AddScoped<IPlanoAcaoRepository, PlanoAcaoRepository>();
             services.AddScoped<IPlanoAcaoService, PlanoAcaoService>();
             services.AddScoped<IPlanoAcaoRegrasService, PlanosAcaoRegrasService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

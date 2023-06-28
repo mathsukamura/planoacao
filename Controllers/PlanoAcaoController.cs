@@ -1,4 +1,5 @@
 ﻿using apiplanoacao.Models;
+using apiplanoacao.Services.Notification;
 using apiplanoacao.Services.PlanoDeAcao.Interface;
 using apiplanoacao.Viewmodels;
 using Microsoft.AspNetCore.Authorization;
@@ -19,11 +20,13 @@ namespace apiplanoacao.Controllers
         private readonly IPlanoAcaoService _planoAcaoService;
 
         private readonly IPlanoAcaoRegrasService _planoAcaoRegrasService;
+        private readonly INotificationService _notificationService;
 
-        public PlanoAcaoController(IPlanoAcaoService planoAcaoService, IPlanoAcaoRegrasService planoAcaoRegrasService)
+        public PlanoAcaoController(IPlanoAcaoService planoAcaoService, IPlanoAcaoRegrasService planoAcaoRegrasService, INotificationService notificationService)
         {
             _planoAcaoService = planoAcaoService;
             _planoAcaoRegrasService = planoAcaoRegrasService;
+            _notificationService = notificationService;
         }
 
         [HttpGet("")]
@@ -91,25 +94,18 @@ namespace apiplanoacao.Controllers
             return tratativas;
         }
 
-        [HttpGet("aprovacoes-pendentes")]
-        public async Task<IList<PlanoAcaoModel>> GetAprovacoesPendentesAsync(EStatus? status, DateTime? dataInicio, DateTime? dataFim) 
-        { 
-            var aprovacoes = await _planoAcaoRegrasService.GetAprovacoesPendentesAsync( status, dataInicio, dataFim);
-
-            return aprovacoes;
-        }
-
         [HttpPut("alterar-status/{id}")]
-        public async Task<IActionResult> AlterarStustusasync(int id, EStatus novoStatus)
+        public async Task<IActionResult> AlterarStatusAsync(int id, EStatus novoStatus)
         {
-            var Tratativa = await _planoAcaoRegrasService.AlterarStatusPlanoAcao(id, novoStatus);
+            var tratativa = await _planoAcaoRegrasService.AlterarStatusPlanoAcao(id, novoStatus);
 
-            if(Tratativa== null)
+            if(tratativa == false)
             {
-                return BadRequest("não é possivel alterar");
+                return BadRequest(_notificationService.GetAllNotifications());
             }
 
-            return Ok(Tratativa);
+            return Ok(_notificationService.GetAllNotifications());
+
         }
     }
 }

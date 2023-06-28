@@ -2,6 +2,7 @@
 using apiplanoacao.Viewmodels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace apiplanoacao.Models
 {
@@ -53,6 +54,19 @@ namespace apiplanoacao.Models
             DescricaoAcao = viewModel.DescricaoAcao;
             DataInicio = viewModel.DataInicio;
             DataFim = viewModel.DataFim;
+        }
+
+        public bool StatusAtualExigeColaboradorResponsavel(int idUsuario)
+        {
+            if (Status == EStatus.Aberto || Status == EStatus.EmAndamento)
+            {
+                if (ResponsaveisTratativa.Any(x => x.Id == idUsuario))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

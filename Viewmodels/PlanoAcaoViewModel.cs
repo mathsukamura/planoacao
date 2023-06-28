@@ -21,14 +21,15 @@ namespace apiplanoacao.Viewmodels
 
         public DateTime DataFim { get; set; } = DateTime.UtcNow;
 
-        public PlanoAcaoModel CreatePlano()
+        public PlanoAcaoModel CreatePlano(int idUsuario)
         {
             return new PlanoAcaoModel
             {
                 ColaboradorId = IdColaboradorAprovador,
                 DescricaoAcao = DescricaoAcao,
                 DataInicio = DataInicio,
-                DataFim = DataFim        
+                DataFim = DataFim,
+                IdUsuario = idUsuario
             };
 
         }
