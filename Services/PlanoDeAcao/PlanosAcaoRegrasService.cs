@@ -86,7 +86,7 @@ namespace apiplanoacao.Services.PlanoDeAcao
 
         private bool AlterarStatus(PlanoAcaoModel planoAcao, EStatus novoStatus, int idUsuario)
         {
-            if (!planoAcao.StatusAtualExigeColaboradorResponsavel(idUsuario))
+            if (planoAcao.StatusAtualExigeColaboradorResponsavel(idUsuario) == false)
             {
                 return false;
             }
@@ -107,27 +107,32 @@ namespace apiplanoacao.Services.PlanoDeAcao
                 {
                     return true;
                 }
+
                 return false;
             }
 
-            if (PermiteAprovarOuReprovarPlano(planoAcao, novoStatus, idUsuario))
+            if (planoAcao.Status == EStatus.AguardandoAprovacao)
             {
-                return true;
+                if (PermiteAprovarOuReprovarPlano(planoAcao, novoStatus, idUsuario))
+                {
+                    return true;
+                }
+
+                return false;
             }
-            
+
             return false;
+        }
+        private bool PermiteAprovarOuReprovarPlano(PlanoAcaoModel planoAcao, EStatus novoStatus, int idUsuario)
+        {
+            return (planoAcao.Status == EStatus.AguardandoAprovacao &&
+                (novoStatus == EStatus.Concluído || novoStatus == EStatus.Reprovado) &&
+                (planoAcao.ColaboradorId == idUsuario));
         }
 
         private void AtualizarStatusPlanoAcao(PlanoAcaoModel planoAcao, EStatus novoStatus)
         {
             planoAcao.Status = novoStatus;
-        }
-
-        private bool PermiteAprovarOuReprovarPlano(PlanoAcaoModel planoAcao, EStatus novoStatus, int idUsuario)
-        {
-            return (planoAcao.Status == EStatus.AguardandoAprovacao &&
-                (novoStatus == EStatus.Concluído || novoStatus == EStatus.Reprovado) &&
-                (planoAcao.ColaboradorAprovador.Id == idUsuario));
         }
 
         private IQueryable<PlanoAcaoModel> FiltroDePlanosDeAcao(IQueryable<PlanoAcaoModel> busca, EStatus? status, DateTime? dataInicio, DateTime? dataFim)

@@ -105,7 +105,6 @@ namespace apiplanoacao.Controllers
             }
 
             return Ok(_notificationService.GetAllNotifications());
-
         }
     }
 }

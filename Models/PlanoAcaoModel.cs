@@ -58,12 +58,18 @@ namespace apiplanoacao.Models
 
         public bool StatusAtualExigeColaboradorResponsavel(int idUsuario)
         {
+
             if (Status == EStatus.Aberto || Status == EStatus.EmAndamento)
             {
                 if (ResponsaveisTratativa.Any(x => x.Id == idUsuario))
                 {
                     return true;
                 }
+            }
+
+            if(Status == EStatus.AguardandoAprovacao)
+            {
+                return true;
             }
 
             return false;
