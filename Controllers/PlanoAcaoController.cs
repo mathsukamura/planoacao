@@ -1,6 +1,8 @@
 ﻿using apiplanoacao.Models;
+using apiplanoacao.Models.Enuns;
 using apiplanoacao.Services.Notification;
 using apiplanoacao.Services.PlanoDeAcao.Interface;
+using apiplanoacao.Services.tratativas;
 using apiplanoacao.Viewmodels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,12 +23,14 @@ namespace apiplanoacao.Controllers
 
         private readonly IPlanoAcaoRegrasService _planoAcaoRegrasService;
         private readonly INotificationService _notificationService;
+        private readonly ITratativaService _tratativaService;
 
-        public PlanoAcaoController(IPlanoAcaoService planoAcaoService, IPlanoAcaoRegrasService planoAcaoRegrasService, INotificationService notificationService)
+        public PlanoAcaoController(IPlanoAcaoService planoAcaoService, IPlanoAcaoRegrasService planoAcaoRegrasService, INotificationService notificationService, ITratativaService tratativaService)
         {
             _planoAcaoService = planoAcaoService;
             _planoAcaoRegrasService = planoAcaoRegrasService;
             _notificationService = notificationService;
+            _tratativaService= tratativaService;
         }
 
         [HttpGet("")]
@@ -94,10 +98,10 @@ namespace apiplanoacao.Controllers
             return tratativas;
         }
 
-        [HttpPut("alterar-status/{id}")]
-        public async Task<IActionResult> AlterarStatusAsync(int id, EStatus novoStatus)
+        [HttpPut("tratamento/{id}")]
+        public async Task<IActionResult> AlterarStatusAsync(int id, EAction acao)
         {
-            var tratativa = await _planoAcaoRegrasService.AlterarStatusPlanoAcao(id, novoStatus);
+            var tratativa = await _tratativaService.AlteraStatus(id, acao);
 
             if(tratativa == false)
             {

@@ -3,18 +3,10 @@ using apiplanoacao.Viewmodels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using apiplanoacao.Models.Enuns;
 
 namespace apiplanoacao.Models
 {
-    public enum EStatus
-    {
-        Aberto = 0, 
-        EmAndamento = 1,
-        AguardandoAprovacao = 2,
-        Reprovado = 3,
-        Concluído = 4
-    }
-
     public class PlanoAcaoModel
     {
 
@@ -56,12 +48,11 @@ namespace apiplanoacao.Models
             DataFim = viewModel.DataFim;
         }
 
-        public bool StatusAtualExigeColaboradorResponsavel(int idUsuario)
+        public bool ValidaResponsavelEColaborador(int idUsuario)
         {
-
             if (Status == EStatus.Aberto || Status == EStatus.EmAndamento)
             {
-                if (ResponsaveisTratativa.Any(x => x.Id == idUsuario))
+                if (ResponsaveisTratativa.Any(r => r.Id == idUsuario))
                 {
                     return true;
                 }
@@ -69,7 +60,10 @@ namespace apiplanoacao.Models
 
             if(Status == EStatus.AguardandoAprovacao)
             {
-                return true;
+                if(ColaboradorId == idUsuario)
+                {
+                    return true;
+                }
             }
 
             return false;

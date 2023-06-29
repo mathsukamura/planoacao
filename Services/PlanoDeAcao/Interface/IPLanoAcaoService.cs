@@ -3,7 +3,8 @@ using apiplanoacao.Viewmodels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static apiplanoacao.Services.PlanoDeAcao.PlanosAcaoRegrasService;
+using apiplanoacao.Models.Enuns;
+
 
 namespace apiplanoacao.Services.PlanoDeAcao.Interface
 {

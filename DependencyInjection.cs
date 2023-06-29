@@ -6,6 +6,7 @@ using apiplanoacao.Services.GerarToken;
 using apiplanoacao.Services.Notification;
 using apiplanoacao.Services.PlanoDeAcao;
 using apiplanoacao.Services.PlanoDeAcao.Interface;
+using apiplanoacao.Services.tratativas;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,6 +25,7 @@ namespace apiplanoacao
             services.AddScoped<IPlanoAcaoRegrasService, PlanosAcaoRegrasService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IObterUsuariorServices, ObterUsuariorServices>();
+            services.AddScoped<ITratativaService, TratativasServices>();
         }    
     }
 }

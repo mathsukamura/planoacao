@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using apiplanoacao.Models.Enuns;
 
 namespace apiplanoacao.Services.PlanoDeAcao
 {
@@ -86,7 +87,7 @@ namespace apiplanoacao.Services.PlanoDeAcao
 
         private bool AlterarStatus(PlanoAcaoModel planoAcao, EStatus novoStatus, int idUsuario)
         {
-            if (planoAcao.StatusAtualExigeColaboradorResponsavel(idUsuario) == false)
+            if (planoAcao.ValidaResponsavelEColaborador(idUsuario) == false)
             {
                 return false;
             }
