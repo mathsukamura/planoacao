@@ -34,6 +34,8 @@ namespace apiplanoacao
 
             services.AddSwaggerConfiguration();
 
+            services.AddCors();
+
             services.AddSwaggerGen(options =>
             {
                 var jwtKey = Configuration.GetValue<string>("Jwt:Key");
@@ -96,8 +98,7 @@ namespace apiplanoacao
             services.AddControllers()
                 .AddJsonOptions(options =>
                 {
-                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-                    options.JsonSerializerOptions.MaxDepth = 64;
+                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                 });
         }
 
@@ -111,6 +112,11 @@ namespace apiplanoacao
             app.UseSwaggerConfiguration();
            
             app.UseRouting();
+
+            app.UseCors(builder =>
+            builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader());
 
             app.UseMiddleware<MiddlewareAuthentication>();
 

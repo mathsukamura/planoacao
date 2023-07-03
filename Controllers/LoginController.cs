@@ -9,6 +9,7 @@ namespace apiplanoacao.Controllers
 {
     [Authorize]
     [Route("login")]
+    [ApiController]
     [AllowAnonymous]
     public class LoginController :ControllerBase
     {

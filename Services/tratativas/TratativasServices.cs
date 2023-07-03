@@ -62,69 +62,47 @@ namespace apiplanoacao.Services.tratativas
 
         private bool TratarPlano(PlanoAcaoModel planoAcao, EAction acao, int idUsuario)
         {
-            if (planoAcao.Status == EStatus.Aberto)
+            if (planoAcao.Status == EStatus.Aberto ||
+                planoAcao.Status == EStatus.EmAndamento ||
+                planoAcao.Status == EStatus.Reprovado)
             {
-                if (planoAcao.ResponsaveisTratativa.Any(r => r.Id == idUsuario))
+                if (!planoAcao.ResponsaveisTratativa.Any(r => r.Id == idUsuario))
                 {
-                    if (acao != EAction.iniciar)
-                    {
-                        return false;
-                    }
 
+                    return false;
+                }
+                
+                if (acao == EAction.iniciar)
+                {
                     planoAcao.Status = EStatus.EmAndamento;
-
                     return true;
                 }
-                return false;
-            }
-
-            if (planoAcao.Status == EStatus.EmAndamento)
-            {
-                if (planoAcao.ResponsaveisTratativa.Any(r => r.Id == idUsuario))
+                else
+                if (acao == EAction.finalizar && planoAcao.Status != EStatus.Aberto)
                 {
-                    if (acao != EAction.finalizar)
-                    {
-                        return false;
-                    }
-
                     planoAcao.Status = EStatus.AguardandoAprovacao;
-
                     return true;
                 }
-                return false;
             }
 
             if (planoAcao.Status == EStatus.AguardandoAprovacao)
             {
-                if (planoAcao.ColaboradorId == idUsuario)
+                if (planoAcao.ColaboradorId != idUsuario)
                 {
-                    if (acao == EAction.aprovar)
-                    {
-                        planoAcao.Status = EStatus.Concluído;
 
-                        return true;
-                    }
-                    else if (acao == EAction.reprovar)
-                    {
-                        planoAcao.Status = EStatus.Reprovado;
-
-                        return true;
-                    }
+                    return false;
                 }
 
-                return false;
-            }
-
-            if(planoAcao.Status == EStatus.Reprovado)
-            {
-                if (planoAcao.ResponsaveisTratativa.Any(r => r.Id == idUsuario))
+                if (acao == EAction.aprovar)
                 {
-                    if (acao != EAction.finalizar)
-                    {
-                        return false;
-                    }
+                    planoAcao.Status = EStatus.Concluído;
 
-                    planoAcao.Status = EStatus.AguardandoAprovacao;
+                    return true;
+                }
+                
+                if (acao == EAction.reprovar)
+                {
+                    planoAcao.Status = EStatus.Reprovado;
 
                     return true;
                 }
